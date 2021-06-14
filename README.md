@@ -45,6 +45,8 @@ We can create different groups of servers inside the Inventory like
 
 The name of the group can be anything we want. It is used to target specific machines for specific installations.
 
+Ansible creates a default group named "all", it includes all the servers defined in the Inventory file.
+
 ### Alias
 
 We can define alias of the servers to make it more readable using "ansible_host"
@@ -114,3 +116,82 @@ We can make a group of groups using [<name of suber-group>:children] syntax
 database
 node  
 ```
+  
+ ## Ansible Playbook
+ Ansible Playbooks are Ansible aurcrestation language. Here, we define what we want to do with the servers. We can define different variety of commands that include copying some stuff on the servers, installing some softwares on them to deploying virtual machine on servers. Ansible playbook gives a variety of commands to work with.
+  
+All playbooks are written in YAML format. A playbook is a single YAML file containing a set of plays. Each plays contains a set of activities to perform(activity to perform on a server or a group of server).
+  
+ Each task runs some actions called as Modules like command, script, service, etc. We will see them in details later in the article.
+  
+ 
+  
+## Running ansible playbook
+There are two ways to run an Ansible playbook 
+  
+  1. Using ansible command
+  2. Using ansible-playbook command
+  
+Ansible command is used when we execute a single task or just testing the connectivity of the servers.
+  
+ ```js
+  ansible <host-group> -a <command> -i <inventory file path with name>
+  
+  ansible <host-group> -m <module> -i <inventory file path with name>
+  
+  ```
+  
+  If we are want to use the direct command then we have to use "-a" and if we are using any module to execute the task in that case we have to use "-m".
+  
+  ```js
+  ansible group1 -a "/sbin/reboot" -i inventory.txt
+  
+  ansible group1 -m ping -i inventories/inventory1.txt
+  ```
+  
+  
+First command is used to reboot the server, here we are directly calling the command so we used -a. In the second command we are using ping module to check the connectivity of the group1 server group.
+  
+group1 is a group of servers present in the inventory file, We need to provide the inventory file name with path where the servers groups are defined.
+ 
+But if we are using the server name directly in the command then there is no need to provide any invertory file name
+  
+```js
+ansible 192.168.1.201 -a "/sbin/reboot"
+```
+  
+But the main purpose of the Ansible is not to run single commands but to run multiple commands at the same time on multiple servers. For that we need to write a ansible-playbook and to execute the ansible-playbook we need ansible-playbook command
+  
+```js
+  ansible-playbook <anisble playbook name> -i <inventory-file>
+```
+
+Sample-playbook.yaml
+  
+```js
+  -
+    name: Test connectivity
+    hosts: all
+    tasks:
+      - name: Ping test
+        ping:
+  
+```
+  
+inventory.txt
+  
+```js
+node ansible_host=192.168.1.201
+target ansible_host=192.168.100.21
+
+```
+ We can run the playbook like:
+  
+```js
+  ansible-playbook Sample-playbook.yaml -i inventory.txt
+```
+We are not defining any host group as 'all' is a default host group that contains all the hosts defined in the inventory file.
+  
+
+  
+ 
