@@ -122,8 +122,89 @@ node
   
 All playbooks are written in YAML format. A playbook is a single YAML file containing a set of plays. Each plays contains a set of activities to perform(activity to perform on a server or a group of server).
   
- Each task runs some actions called as Modules like command, script, service, etc. We will see them in details later in the article.
+ Each task runs some actions called as Modules like command, script, service,yum, etc. We will see them in details later in the article.
   
+Ansible-playbook Example:
+  
+```js
+# Play 1  
+- name: update web servers
+  hosts: webservers
+  become: yes
+  become_user: root
+  
+  tasks:
+  - name: ensure apache is at the latest version
+    yum:
+      name: httpd
+      state: latest
+  - name: write the apache config file
+    template:
+      src: /srv/httpd.j2
+      dest: /etc/httpd.conf
+
+# Play 2  
+- name: update db servers
+  hosts: databases
+  remote_user: root
+
+  tasks:
+  - name: ensure postgresql is at the latest version
+    yum:
+      name: postgresql
+      state: latest
+  - name: ensure that postgresql is started
+    service:
+      name: postgresql
+      state: started
+```
+
+Each playbook must have atleast a name, hosts and tasks to execute and can have other properties like:
+  
+#### name: 
+  Name of the play, a single ansible-playbook can have multiple plays and each must have a unique name.
+
+#### hosts: 
+  Name of host group defined in an Inventory file
+  
+#### become: 
+  Lets execution of the play using a user with higher previlage
+  
+#### become_user: 
+  Changes the user to the given user to while executing the tasks
+  
+#### tasks: 
+  Set of tasks to perform on the defined hosts.
+  
+and many more...
+  
+Each play has a set of tasks that gets executed in the defined order. So the order of tasks plays a major role in a play. But the direct properties order does not matter like in Play 2 writing remote_user before the hosts is not going to immpact it.
+  
+Each task must have a name and module.
+  
+Examples of tasks
+  
+```js
+    - name: Install the httpd apps
+      yum: name=httpd
+  
+    - name: Deploy configuration File
+      template: src=templates/index.j2 dest=/var/www/html/index.html
+  
+    - name: start the httpd service
+      service: name=httpd state=started
+  
+    - name: Install common software requirements
+      yum: pkg={{ item }} state=installed
+      with_items:
+       - git
+       - ntp
+       - vim
+  
+```
+The main part of a task is the module that it executes.  
+
+ 
  
   
 ## Running ansible playbook
