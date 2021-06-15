@@ -120,9 +120,9 @@ node
  ## Ansible Playbook
  Ansible Playbooks are Ansible aurcrestation language. Here, we define what we want to do with the servers. We can define different variety of commands that include copying some stuff on the servers, installing some softwares on them to deploying virtual machine on servers. Ansible playbook gives a variety of commands to work with.
   
-All playbooks are written in YAML format. A playbook is a single YAML file containing a set of plays. Each plays contains a set of activities to perform(activity to perform on a server or a group of server).
+All playbooks are written in YAML format. A playbook is a single YAML file containing a set of plays. Each plays contains a set of tasks to perform(tasks to perform on a server or a group of server).
   
- Each task runs some actions called as Modules like command, script, service,yum, etc. We will see them in details later in the article.
+Each task runs some actions called as Modules like command, script, service,yum, etc. We will see them in details later in the article.
   
 Ansible-playbook Example:
   
@@ -203,6 +203,8 @@ Examples of tasks
   
 ```
 The main part of a task is the module that it executes.  
+
+## Modules
 
  
  
