@@ -205,8 +205,134 @@ Examples of tasks
 The main part of a task is the module that it executes.  
 
 ## Modules
+  
+ A module is a reusable, standalone script that Ansible runs on your behalf, either locally or remotely. Modules interact with your local machine, an API, or a remote system to perform specific tasks like changing a database password or spinning up a cloud instance.
+  
+Ansible ships with a number of modules, that are categoriesed in a number of category that can be executed directly on remote hosts or through Playbooks.
+  
+Users can also write their own modules. These modules can control system resources, like services, packages, or files (anything really), or handle executing
+system commands.
+  
+ We can execute modules using the ansible command like:
+  
+```js
+  ansible group1 -m ping -i inventories.txt
+```
+-m is used to define the module in the ansible command.
+  
+and using playbook like:
+  
+```js
+  -
+    name: Test connectivity
+    hosts: all
+    tasks:
+      - name: Ping test
+        ping:
+  
+```
 
- 
+They are categorised into different module cateegories like System, Commands, Files, Database, Cloud, etc.
+  
+##### System 
+  It is used to modify the system like modifying the user, IP tables, firewall settings etc.
+  
+```js
+  - name: System module category Example
+    hosts: all
+    tasks:
+      - name: Add the user 'johnd' with a specific uid and a primary group of 'admin'
+        user:
+          name: johnd
+          comment: John Doe
+          uid: 1040
+          group: admin
+  
+```
+  
+##### Commands
+  It is used to run a command or scripts on a host servers
+  
+```js
+  - name: Command module category example
+    hosts: all
+    tasks:
+      - name: Execute the UNAME command
+        register: unameout
+        command: "uname -a"
+  
+```
+  
+##### Files
+  It is used to work with files like copy a file in all the defined servers, searching a file  in all the defined servers etc.
+  
+```js
+  - name: Files module category example
+    hosts: all
+    tasks:
+      - name: Change file ownership, group and permissions
+        ansible.builtin.file:
+          path: /etc/foo.conf
+          owner: foo
+          group: foo
+          mode: '0644'
+  
+```  
+  
+##### Database
+  Used to work with databases like MySQL, PostgreSQL, MongoDB etc.
+  
+```js
+  - name: Database module category example: Creating a database with name 'jackdata and Copy database dump file to remote host and restore it to database 'my_db'
+    hosts: all
+    tasks:
+      - mssql_db:
+          name: jackdata
+          state: present
+      - copy:
+          src: dump.sql
+          dest: /tmp
+      - mssql_db:
+          name: my_db
+          state: import
+          target: /tmp/dump.sql
+```  
+  
+##### Cloud
+  Used to work with cloud service providers like AWS, Azure, Docker etc.
+  
+```js
+  - name: Cloud module category example
+    hosts: all
+    tasks:
+      - name: Create a new direct connect gateway attached to virtual private gateway
+        dxgw:
+          state: present
+          name: my-dx-gateway
+          amazon_asn: 7224
+          virtual_gateway_id: vpg-12345
+        register: created_dxgw
+  
+```   
+  
+##### Windows
+  Helps to use ansible in Windows operating system, it include modules like Win_copy, Win_command, Win_domain, Win_use, etc.
+  
+```js
+  - name: Windows module category example
+    hosts: all
+    tasks:
+      - name: Download the 7-Zip package
+        win_get_url:
+          url: https://www.7-zip.org/a/7z1701-x64.msi
+          dest: C:\temp\7z.msi
+  
+```  
+There are many more modules present, it is not possible to talk about all of them in the article. You can see the list of modules using command :
+  
+```js
+ansible-doc -l
+```
  
   
 ## Running ansible playbook
@@ -215,7 +341,9 @@ There are two ways to run an Ansible playbook
   1. Using ansible command
   2. Using ansible-playbook command
   
-Ansible command is used when we execute a single task or just testing the connectivity of the servers.
+Ansible command is used when we execute a single task on the defined servers in Inventory.
+  
+ Syntax:
   
  ```js
   ansible <host-group> -a <command> -i <inventory file path with name>
@@ -225,6 +353,8 @@ Ansible command is used when we execute a single task or just testing the connec
   ```
   
   If we are want to use the direct command then we have to use "-a" and if we are using any module to execute the task in that case we have to use "-m".
+  
+  Examples:
   
   ```js
   ansible group1 -a "/sbin/reboot" -i inventory.txt
@@ -237,13 +367,15 @@ First command is used to reboot the server, here we are directly calling the com
   
 group1 is a group of servers present in the inventory file, We need to provide the inventory file name with path where the servers groups are defined.
  
-But if we are using the server name directly in the command then there is no need to provide any invertory file name
+But if we are using the server name directly in the command then there is no need to provide any invertory file name.
   
 ```js
 ansible 192.168.1.201 -a "/sbin/reboot"
 ```
   
-But the main purpose of the Ansible is not to run single commands but to run multiple commands at the same time on multiple servers. For that we need to write a ansible-playbook and to execute the ansible-playbook we need ansible-playbook command
+But the main purpose of the Ansible is not to run single commands but to run multiple commands at the same time on multiple servers. For that we need to write an ansible-playbook and to execute the ansible-playbook we need ansible-playbook command
+  
+Syntax:
   
 ```js
   ansible-playbook <anisble playbook name> -i <inventory-file>
