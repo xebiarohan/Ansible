@@ -49,9 +49,20 @@ host_key_checking = False
 
 8. Ansible is idempotent means result of performing it once is exactly same as the result of performming it repeatedly without any intervening actions.
 
-9. We use INI format to design the inventory files but we can also have inventory files in yaml format
+9. We can limit to a particular host even in multiple hosts are mentioned in the playbook
 
-10. By default all the hosts are added to the all group
+```
+    ansible-playbook abc.yaml -l centos1
+```
+
+
+
+
+
+---------------------------
+1. We use INI format to design the inventory files but we can also have inventory files in yaml format
+
+2. By default all the hosts are added to the all group
 
 ```
 
