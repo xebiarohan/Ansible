@@ -164,4 +164,50 @@ external_inline_named_list:
 
 ```
 
-6. 
+6. hostvars
+   - contains all the details of variables specific to host
+   - It includes data coming as a part of setup module
+   - It include all the variables defined in the inventory files like ansible_port, ansible_connection, etc
+   - We can directly pring the ansible user as well
+```
+  tasks:
+    - name: Test hostvars with an ansible fact and collect ansible_port, dot notation
+      debug:
+        msg: "{{ hostvars[ansible_hostname].ansible_port }}"
+
+    - name: Test hostvars with an ansible fact and collect ansible_port, dict notation
+      debug:
+        msg: "{{ hostvars[ansible_hostname]['ansible_port'] }}"
+
+    - name: printing ansible_user
+      debug:
+        msg: {{ansible_user}}
+
+```
+
+7. we can pass the variable using the -e
+
+```
+  ansible-playbook abc.yaml -e var_key="var_value"
+
+  OR
+
+  ansible-playbook abc.yaml -e {"var_key": "var_value"}
+```
+
+8. we can pass whole variable file as well
+
+```extra_vars_file.yaml
+---
+extra_vars_key: extra vars value
+...
+```
+
+```
+  ansible-playbook abc.yaml -e @extra_vars_file.yaml
+```
+
+9. we can use directories for hostvars and groupvars in combination with Yaml files
+    - Structure for hostvars should be host_vars/hostname example host_Vars/ubuntu-c
+    - Structure for groupvars should be group_vars/groupname  example group_vars/ubuntu
+

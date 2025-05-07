@@ -56,3 +56,21 @@ echo {\""date\"" : \""`date`\""}
 echo [date]
 echo date=`date`
 ```
+
+6. By default ansible expect us to put the custom facts to be in /etc/ansible/facts.d
+    - But this location requires root excess
+    - We can override this location
+    - we still have to add the facts in the hosts machine
+    - then while running the setup module we can mention where the facts are
+
+```
+- 
+  name: updated location of custom facts
+  hosts: all
+  gather_facts: True
+  tasks:
+    - name: running the setup module
+      setup:
+        fact_path: /home/ansible/facts.d
+
+```
