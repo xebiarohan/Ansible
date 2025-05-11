@@ -47,4 +47,51 @@
 
 3. Pause
    - Pause the execution of ansible playbook for a given period
-   - 
+   - or Pausing until a prompt is acknowledged
+
+```
+  tasks:
+    - name: Pausing for 10 seconds
+      pause:
+        seconds: 10
+
+    - name: Pausing for acknowledging prompt
+      pause"
+        prompt: Please check that the webserver is running, press enter to continue
+
+```
+
+4. wait_for module
+    - Use for waiting for a specific action to complete
+
+```
+  tasks:
+    - name: waiting for port 80 to be operational
+      wait_for:
+        port: 80
+
+```
+
+5. Assembly module
+    - Used to merge multiple files in a file
+    - let say we have multiple conf files in conf.d folder
+
+```
+  tasks:
+    - name: assembling config files to sshd_config
+      assemble:
+        src: conf.d
+        dest: sshd_config
+```
+
+6. fetch module
+   - Used to get the files from the host machine and store it on the local machine
+
+```
+tasks:
+  - name: fetching files from host machine
+    fetch:
+      src: /etc/redhat-release
+      dest: /tmp/redhat-release
+
+```

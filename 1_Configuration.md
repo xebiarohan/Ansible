@@ -55,6 +55,11 @@ host_key_checking = False
     ansible-playbook abc.yaml -l centos1
 ```
 
+10. Operator & is used to run the ansible playbook in background
+
+```
+    ansible-playbook abc.yaml &
+```
 
 
 
