@@ -259,3 +259,4 @@ ubuntu
 ```
     ansible all -i inventory.py --list-hosts
 ```
+
