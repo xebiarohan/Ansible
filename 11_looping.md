@@ -121,3 +121,31 @@ tasks:
       - [photos, movies, documents]
 
 ```
+
+8. Example of with_file
+
+```
+tasks:
+  - name: example of with file
+    authorize_key:
+      user: james
+      key: {{item}}
+    with_file:
+      - /home/ansible/.ssh/id_rsa.pub
+```
+
+``` id_rsa.pub
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwuGPCK+4pS5onElrFYL/yRKDwXf9Ew+nJV1d39gowvX+VZ+p/vZQTFnuCjyF1bZXBKSxbae9JyqysPe9sWQVW7silesArwFAaTU3ow/jCHBLNwjXOlJnVFh9OFyvpHGfsjkXnaFoRtlsskmJ/0zNDF/i33GsfdiCYsi+qCJozYkeTIeSADgmMCVkKvF8YvPRycEoUSQCsmzvao0XMTdPdya+Ww09iYJHzL6yIHgeoCrdyp4c/FWphBLc1DH6BMA6UHnaUQ2tUy4NY461WSt2lYU0M+AOgFvkBiPdWJLfJ0HOdQSsa2eYA26NeKYu3PsPZ2EKM9t3XdM/HWm8VSqp2YQFw2AZ4aWB8c2i5JfuZykkrWlk/phY2Z/GIdoEHillUAT7Xg71grZAas8ELIIDOG9JDrnAbPWLWpH3gY0+03F2jVZO6gSQNkpeP/2umsIXU4zFQoDclfV108GstrUgQ2p735YdBLsdBTwzIPdIA3v3NXGyIk33Ckf09nDnrwwc= ansible@ubuntu-c
+```
+
+9. Example of with_sequence
+  
+```
+tasks:
+  - name: example of with_Sequence
+    file:
+      dest: "/home/james/sequence_{{item}}
+      state: directory
+    with_sequence: start=0 end=100 stride=10
+```
