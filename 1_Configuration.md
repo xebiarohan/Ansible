@@ -174,9 +174,7 @@ ansible all -m fetch 'src=/tmp/test_modules.txt dest=/tmp/' -o
     ---
 
     example_key_1: this is a string
-
     example_key_2: 'this is another string'
-
     example_key_3: "this is 3rd string"
 
     ...
@@ -184,53 +182,42 @@ ansible all -m fetch 'src=/tmp/test_modules.txt dest=/tmp/' -o
 ```
 
 4. Boolean values
-
    False: false, False, FALSE, no, No, NO, OFF, off, Off
-
    True: true, True, TRUE, yes, YES, Yes, on,On,ON
 
 5. List in yaml contain values with dashes in front
 
 ```
-
     - item1
-
     - item2
-
     - item3
-
 ```
 
 6. Dictioneries (key-value pair)
 
 ```
-
 key1:value1
-
 key2:value2
-
 key3:value3
-
 ```
 
 7. Combination of dictioneries and lists
 
 ```
-
 key1:
-
   - item1
-
   - item2
-
   - item3
 
 
 
 key2:
-
   - item1
-
   - item2
+```
 
+8. Checking if the command is still running in the background
+
+```
+    ps -ef | grep ssh
 ```
