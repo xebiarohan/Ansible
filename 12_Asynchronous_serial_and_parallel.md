@@ -116,7 +116,7 @@ PLAYBOOK VARS (Ansible vars):
 
 7. Blocks
    - Used to group a number of tasks
-   - Came in ansible 2.3 version
+   - Syntax upgraded in ansible 2.3 version
    - block,rescue, always works as try catch and finally
 
 ```
@@ -177,16 +177,16 @@ PLAYBOOK VARS (Ansible vars):
   - Copy the generated value and put it in the group vars
   - Now while runnng the command add --ask-vault-pass to get the real value of the variables
 
-```
+```before
 ansible_become: true
 ansible_become_pass: password
 ```
 
-```
+```command
 ansible-vault encrypt_string --ask-vault-pass --name 'ansible_become_pass' 'password'
 ```
 
-```
+```adding password
 New Vault password: 
 Confirm New Vault password: 
 Encryption successful
@@ -199,7 +199,7 @@ ansible_become_pass: !vault |
           3434
 ```
 
-```
+```After
 ---
 ansible_become: true
 ansible_become_pass: !vault |
@@ -212,7 +212,7 @@ ansible_become_pass: !vault |
 ...
 ```
 
-```
+```command to run a module
 ansible --ask-vault-pass ubuntu -m ping -o
 ```
 
@@ -270,6 +270,31 @@ external_vault_var: Example External Vault Var  // this is the content of the fi
 
 ```
 echo vault_password > password_file
-ansible-vault view --vault-password-file password external_vault_vars.yaml 
+ansible-vault view --vault-password-file password_file external_vault_vars.yaml 
 
+```
+
+14. Other way to enter password
+     - it will open a prompt asking password
+     - If we have password in a file then we can pass the file name
+
+```
+ansible-vault view --vault-id @prompt enternal_vault_vars.yaml
+
+ansible-vault view --vault-id @password_file entered_vault_vars.yaml
+```
+
+15. Named vaults
+    - In the first command the name of the vault is vars
+    - @prompt is used to ask for prompt password when we try to access it
+    - In second command we are encrypting a key value pair, adding it to a named vault (name is ssh)
+    - In the third command we are using 2 different vaults
+    - So when we run the third command then we will get 2 prompts(1 by 1) to enter password of both vaults
+
+```
+ansible-vault encrypt --vault-id vars@prompt external_vault_vars.yaml
+
+ansible-vault encrypt_string --vault-id ssh@prompt 'key' 'value'
+
+ansible-playbook --vault-id ssh@prompt --vault-id vars@prompt playbook.yaml
 ```
