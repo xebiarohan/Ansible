@@ -60,3 +60,89 @@
 - import_playbook: imported_playbook.yaml
   when: import_playboook_var is defined
 ```
+
+5. Tags in playbooks
+   - Helpful when working with large playbooks
+   - Or when we have playbooks inside other playbooks
+   - and we want to run part of the playbook without running the whole playbook
+   - by detault tag "all" is attached to all the tasks of playbook
+
+```
+- 
+  name: Example of tags in playbooks
+  hosts: all
+  tasks:
+    - name: Install EPEL
+      yum:
+        name: epel-release
+        update_cache: yes
+        state: latest
+      when: ansible_distribution == 'CentOS'
+      tags:
+        - install-epel
+
+    - name: Install Nginx
+      package:
+        name: nginx
+        state: latest
+      tags:
+        - install-nginx
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      notify: Check HTTP Service
+      tags:
+        - restart-nginx
+  handlers:
+    - name: Check HTTP Service
+      uri:
+        url: http://{{ ansible_default_ipv4.address }}
+        status_code: 200 
+
+```
+
+6. To run a playbook with tag
+   - we can run with single tast or multiple tasks
+
+```
+ansible-playbook abc.yaml --tags "install-epel"
+
+ansible-playbook abc.yaml --tags "install-nginx, restart-nginx"
+```
+
+7. we can use tags to skip specific tasks while running the whole playbook
+
+```
+ansible-playbook abc.yaml --skip-tags "restart-nginx"
+```
+
+8. If a task is tagged "always" then it will always run irrrespective of any tag we pass while running the playbook
+    - if we dont want to run them then we can add it in skip-tags
+
+9. Special tags
+    - tagged : runs only the tasks that are tagged : ansible-playbook abc.yaml --tags "tagged"
+    - untagged : runs only the tasks that are un tagged : ansible-playbook abc-yaml "untagged"
+    - all : runs all the tasks : ansible-playbook abc-yaml "all"
+
+10. Tags get inherited in include_tasks, import_tasks and import_playbook
+
+```
+- 
+  name: example of include tasks, include playbooks with tasks
+  hosts: all
+  tasks:
+    - include_tasks: abc.yaml
+      tags:
+        - include_tasks
+
+    - import_tasks: abc,yaml
+      tags:
+        - import_tasks
+  
+  - import_playbooks:
+    tags:
+      -import_playbook
+
+```
