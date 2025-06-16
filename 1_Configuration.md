@@ -221,3 +221,9 @@ key2:
 ```
     ps -ef | grep ssh
 ```
+
+9. checking the directory structure in a folder
+
+```
+    find .
+```
